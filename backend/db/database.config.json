@@ -1,0 +1,10 @@
+{
+  "host": "localhost",
+  "port": 3306,
+  "database": "eve_dealer_management",
+  "user": "eve_dealer",
+  "password": "eve_dealer_password",
+  "connectionLimit": 10,
+  "timezone": "+07:00"
+}
+

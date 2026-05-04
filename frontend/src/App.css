@@ -1,0 +1,163 @@
+.app-shell {
+  min-height: 100vh;
+  background: #f4f6fa;
+}
+
+.app-sider {
+  background: #fff;
+  border-right: 1px solid #dde3ee;
+}
+
+.brand-block {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 20px 18px;
+  border-bottom: 1px solid #edf1f7;
+}
+
+.brand-block > div {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.brand-icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  color: #1b66d2;
+  background: #eaf2ff;
+  border-radius: 6px;
+  font-size: 18px;
+}
+
+.app-content {
+  padding: 22px;
+}
+
+.page-header,
+.record-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.page-header h2,
+.record-header h3 {
+  margin: 0 0 4px;
+}
+
+.kpi-row {
+  margin-bottom: 14px;
+}
+
+.table-card {
+  border: 1px solid #dde3ee;
+}
+
+.toolbar {
+  margin-bottom: 12px;
+}
+
+.search-input {
+  width: min(620px, 100%);
+}
+
+.filter-chips {
+  margin-bottom: 12px;
+}
+
+.business-key {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 2px 8px;
+  color: #0b4fb3;
+  font-weight: 700;
+  background: #edf5ff;
+  border: 1px solid #b9d7ff;
+  border-radius: 4px;
+}
+
+.business-key.large {
+  margin-bottom: 6px;
+  font-size: 15px;
+}
+
+.link-button {
+  height: auto;
+  padding: 0;
+  white-space: normal;
+  text-align: left;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.wizard-form {
+  margin-top: 22px;
+}
+
+.account-kind-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.account-kind-grid .ant-radio-button-wrapper {
+  height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.drawer-footer {
+  margin-top: 16px;
+}
+
+.highlight-row {
+  margin: 14px 0;
+}
+
+.highlight-value {
+  margin-top: 4px;
+  color: #1f2a3d;
+  font-weight: 700;
+}
+
+.validation-card .ant-timeline {
+  margin-top: 4px;
+}
+
+.modal-state,
+.stack-card {
+  margin-top: 14px;
+}
+
+.tight-divider {
+  margin: 10px 0;
+}
+
+@media (max-width: 980px) {
+  .app-shell {
+    display: block;
+  }
+
+  .app-sider {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+
+  .page-header,
+  .record-header {
+    flex-direction: column;
+  }
+}
