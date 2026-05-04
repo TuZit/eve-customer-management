@@ -3,6 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
+import { configureApp } from './../src/app.config';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication<App>;
@@ -13,28 +14,30 @@ describe('AppController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    configureApp(app);
     await app.init();
   });
 
-  it('/ (GET)', () => {
+  it('/api (GET)', () => {
     return request(app.getHttpServer())
-      .get('/')
+      .get('/api')
       .expect(200)
-      .expect({
-        database: {
-          database: 'eve_dealer_management',
-          host: 'localhost',
-          port: 3306,
-          status: 'disabled',
-        },
-        service: 'dealer-management',
-        status: 'ok',
+      .expect((response) => {
+        expect(response.body).toEqual({
+          service: 'dealer-management',
+          status: 'ok',
+          database: expect.objectContaining({
+            database: 'eve_dealer_management',
+            host: 'localhost',
+            status: 'disabled',
+          }),
+        });
       });
   });
 
-  it('/openapi.json (GET)', () => {
+  it('/api/docs-json (GET)', () => {
     return request(app.getHttpServer())
-      .get('/openapi.json')
+      .get('/api/docs-json')
       .expect(200)
       .expect((response) => {
         const body = response.body as {
@@ -47,14 +50,14 @@ describe('AppController (e2e)', () => {
       });
   });
 
-  it('/api-docs (GET)', () => {
+  it('/api/docs (GET)', () => {
     return request(app.getHttpServer())
-      .get('/api-docs')
+      .get('/api/docs')
       .expect(200)
       .expect('Content-Type', /html/)
       .expect((response) => {
         expect(response.text).toContain('SwaggerUIBundle');
-        expect(response.text).toContain('/openapi.json');
+        expect(response.text).toContain('/api/docs-json');
       });
   });
 

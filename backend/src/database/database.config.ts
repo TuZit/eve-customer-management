@@ -16,7 +16,7 @@ type DatabaseConfigFile = Partial<Omit<DatabaseConfig, 'disabled'>>;
 
 const DEFAULT_DATABASE_CONFIG: DatabaseConfigFile = {
   host: 'localhost',
-  port: 3306,
+  port: 3307,
   database: 'eve_dealer_management',
   user: 'eve_dealer',
   password: 'eve_dealer_password',

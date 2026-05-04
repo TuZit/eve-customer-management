@@ -3,10 +3,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CustomerAccountsModule } from './customer-accounts/customer-accounts.module';
 import { DatabaseModule } from './database/database.module';
-import { SwaggerDocsModule } from './swagger/swagger-docs.module';
 
 @Module({
-  imports: [DatabaseModule, CustomerAccountsModule, SwaggerDocsModule],
+  imports: [DatabaseModule, CustomerAccountsModule],
   controllers: [AppController],
   providers: [AppService],
 })

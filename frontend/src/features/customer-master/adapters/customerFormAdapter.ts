@@ -8,6 +8,16 @@ import { brandSystems } from '../../../constants/customerMaster'
 
 export type CustomerFormValues = Record<string, string | number | undefined>
 
+type CreateCustomerForm = {
+  validateFields: () => Promise<unknown>
+  getFieldsValue: (includeAll?: true) => CustomerFormValues
+}
+
+export async function toCreateCustomerAccountRequestFromForm(form: CreateCustomerForm) {
+  await form.validateFields()
+  return toCreateCustomerAccountRequest(form.getFieldsValue(true))
+}
+
 export function toCreateCustomerAccountRequest(values: CustomerFormValues) {
   const references = buildExternalReferences(values)
 

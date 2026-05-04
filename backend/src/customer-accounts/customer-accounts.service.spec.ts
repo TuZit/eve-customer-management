@@ -52,7 +52,7 @@ describe('CustomerAccountsService', () => {
       ],
     });
 
-    expect(account.accountNumber).toBe('ACC-000001');
+    expect(account.accountNumber).toBe('ACC-000254');
     expect(account.defaultBillingAddressId).toBe(account.addresses[0].id);
   });
 

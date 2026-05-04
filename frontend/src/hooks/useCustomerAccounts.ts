@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import { customerAccountsApi } from '../api/customerAccounts'
-import { sampleAccounts } from '../data/sampleAccounts'
 import { useDealerUiStore } from '../store/dealerUiStore'
 
 export function useCustomerAccounts() {
@@ -18,12 +17,6 @@ export function useCustomerAccounts() {
 
   return useQuery({
     queryKey: ['customer-accounts', serverQuery],
-    queryFn: async () => {
-      try {
-        return await customerAccountsApi.list(serverQuery)
-      } catch {
-        return sampleAccounts
-      }
-    },
+    queryFn: () => customerAccountsApi.list(serverQuery),
   })
 }

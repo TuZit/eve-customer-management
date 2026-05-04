@@ -6,8 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "test": "vitest run",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "gen:types": "swagger-typescript-api generate -p ./swagger.json -o ./src/types -n swagger.types.ts --no-client --route-types && npx prettier --write ./src/types/swagger.types.ts"
   },
   "dependencies": {
     "@ant-design/icons": "^6.2.2",
@@ -27,8 +29,10 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.5.0",
+    "swagger-typescript-api": "^13.2.16",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.58.2",
-    "vite": "^8.0.10"
+    "vite": "^8.0.10",
+    "vitest": "^4.1.5"
   }
 }

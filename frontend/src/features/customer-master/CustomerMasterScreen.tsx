@@ -32,7 +32,6 @@ import { customerAccountsApi, type AccountStatus, type CustomerAccountDto } from
 import { BusinessKey } from '../../components/BusinessKey'
 import { PageHeader } from '../../components/PageHeader'
 import { statusColor } from '../../constants/customerMaster'
-import { sampleAccounts } from '../../data/sampleAccounts'
 import { useCustomerAccounts } from '../../hooks/useCustomerAccounts'
 import { useDealerUiStore } from '../../store/dealerUiStore'
 import {
@@ -52,7 +51,7 @@ import { DuplicateCodeModal } from './components/DuplicateCodeModal'
 const { Text } = Typography
 
 export function CustomerMasterScreen() {
-  const { data = sampleAccounts, isFetching } = useCustomerAccounts()
+  const { data = [], isFetching } = useCustomerAccounts()
   const filters = useDealerUiStore((state) => state.filters)
   const accounts = useMemo(() => applyClientFilters(data, filters), [data, filters])
   const selectedAccountId = useDealerUiStore((state) => state.selectedAccountId)

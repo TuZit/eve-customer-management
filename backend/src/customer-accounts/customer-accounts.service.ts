@@ -31,11 +31,16 @@ import {
   UpdateCustomerAccountRequest,
   UpsertCustomerAccountRequest,
 } from './customer-account.models';
+import { initialCustomerAccounts } from './customer-accounts.seed';
 
 @Injectable()
 export class CustomerAccountsService {
   private readonly accounts = new Map<string, CustomerAccountRecord>();
   private accountNumberSequence = 1;
+
+  constructor() {
+    this.seedInitialAccounts();
+  }
 
   list(query: ListCustomerAccountsQuery = {}): CustomerAccountRecord[] {
     const search = query.search?.trim().toLowerCase();
@@ -1175,5 +1180,19 @@ export class CustomerAccountsService {
 
   private nextAccountNumber(): string {
     return `ACC-${String(this.accountNumberSequence++).padStart(6, '0')}`;
+  }
+
+  private seedInitialAccounts(): void {
+    for (const account of initialCustomerAccounts) {
+      this.create(account);
+    }
+
+    const highestSeedAccountNumber = this.list()
+      .map((account) => account.accountNumber.match(/^ACC-(\d+)$/)?.[1])
+      .filter((value): value is string => Boolean(value))
+      .map(Number)
+      .reduce((highest, value) => Math.max(highest, value), 0);
+
+    this.accountNumberSequence = highestSeedAccountNumber + 1;
   }
 }

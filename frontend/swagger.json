@@ -1,0 +1,1410 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Dealer Management API",
+    "version": "1.0.0",
+    "description": "Salesforce-style Customer Master backend based on the Notion customer account data model."
+  },
+  "servers": [
+    {
+      "url": "/api"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Customer Accounts",
+      "description": "Customer master data, contacts, addresses, references, and hierarchy."
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "tags": ["Health"],
+        "summary": "Service health",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer-accounts": {
+      "get": {
+        "tags": ["Customer Accounts"],
+        "summary": "List customer accounts",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "customerCode",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "accountType",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DEALER",
+                "SHOWROOM",
+                "B2B_CUSTOMER",
+                "B2C_CUSTOMER",
+                "ONLINE_CUSTOMER",
+                "PARTNER",
+                "INDIVIDUAL",
+                "COMPANY"
+              ]
+            }
+          },
+          {
+            "name": "customerSegment",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["B2B", "B2C"]
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["PENDING", "ACTIVE", "INACTIVE", "SUSPENDED", "ARCHIVED"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CustomerAccount"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Customer Accounts"],
+        "summary": "Create a customer account",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCustomerAccountRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerAccount"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer-accounts/upsert": {
+      "post": {
+        "tags": ["Customer Accounts"],
+        "summary": "Upsert by account number, customer code, or external reference",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertCustomerAccountRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerAccount"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer-accounts/upsert/by-external-id/{sourceSystem}/{externalId}": {
+      "patch": {
+        "tags": ["Customer Accounts"],
+        "summary": "Upsert by external system ID",
+        "parameters": [
+          {
+            "name": "sourceSystem",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "externalId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCustomerAccountRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerAccount"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer-accounts/by-code/{customerCode}": {
+      "get": {
+        "tags": ["Customer Accounts"],
+        "summary": "Find customer account by business code",
+        "parameters": [
+          {
+            "name": "customerCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerAccount"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer-accounts/by-account-number/{accountNumber}": {
+      "get": {
+        "tags": ["Customer Accounts"],
+        "summary": "Find customer account by CRM account number",
+        "parameters": [
+          {
+            "name": "accountNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerAccount"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer-accounts/{id}": {
+      "get": {
+        "tags": ["Customer Accounts"],
+        "summary": "Get customer account detail",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerAccount"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Customer Accounts"],
+        "summary": "Update customer account",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCustomerAccountRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerAccount"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer-accounts/{id}/status": {
+      "patch": {
+        "tags": ["Customer Accounts"],
+        "summary": "Update account status",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAccountStatusRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerAccount"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer-accounts/{id}/contacts": {
+      "get": {
+        "tags": ["Customer Accounts"],
+        "summary": "List contacts under an account",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CustomerContact"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Customer Accounts"],
+        "summary": "Add contact under an account",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerContact"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerContact"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer-accounts/{id}/addresses": {
+      "get": {
+        "tags": ["Customer Accounts"],
+        "summary": "List addresses under an account",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CustomerAddress"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Customer Accounts"],
+        "summary": "Add address under an account",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerAddress"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerAddress"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer-accounts/{id}/children": {
+      "get": {
+        "tags": ["Customer Accounts"],
+        "summary": "List direct child accounts",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CustomerAccount"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer-accounts/{id}/hierarchy": {
+      "get": {
+        "tags": ["Customer Accounts"],
+        "summary": "Get account hierarchy tree",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountHierarchyNode"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HealthResponse": {
+        "type": "object",
+        "properties": {
+          "service": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "CustomerAccount": {
+        "type": "object",
+        "required": [
+          "id",
+          "accountNumber",
+          "customerCode",
+          "accountName",
+          "accountKind",
+          "customerSegment",
+          "accountType",
+          "status",
+          "contacts",
+          "addresses",
+          "externalReferences",
+          "classifications",
+          "relationships",
+          "createdAt",
+          "updatedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Internal technical primary key"
+          },
+          "accountNumber": {
+            "type": "string",
+            "description": "CRM account number, e.g. ACC-000001"
+          },
+          "customerCode": {
+            "type": "string",
+            "description": "Unique dealer/customer business code"
+          },
+          "accountName": {
+            "type": "string"
+          },
+          "accountKind": {
+            "type": "string",
+            "enum": ["ORGANIZATION", "PERSON"]
+          },
+          "customerSegment": {
+            "type": "string",
+            "enum": ["B2B", "B2C"]
+          },
+          "accountType": {
+            "type": "string",
+            "enum": [
+              "DEALER",
+              "SHOWROOM",
+              "B2B_CUSTOMER",
+              "B2C_CUSTOMER",
+              "ONLINE_CUSTOMER",
+              "PARTNER",
+              "INDIVIDUAL",
+              "COMPANY"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["PENDING", "ACTIVE", "INACTIVE", "SUSPENDED", "ARCHIVED"]
+          },
+          "parentAccountId": {
+            "type": "string"
+          },
+          "parentCustomerCode": {
+            "type": "string"
+          },
+          "taxCode": {
+            "type": "string"
+          },
+          "businessRegistrationNo": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "website": {
+            "type": "string"
+          },
+          "industry": {
+            "type": "string"
+          },
+          "regionCode": {
+            "type": "string"
+          },
+          "territoryCode": {
+            "type": "string"
+          },
+          "ownerUserId": {
+            "type": "string"
+          },
+          "defaultBillingAddressId": {
+            "type": "string"
+          },
+          "defaultShippingAddressId": {
+            "type": "string"
+          },
+          "defaultBusinessLocationAddressId": {
+            "type": "string"
+          },
+          "businessProfile": {
+            "$ref": "#/components/schemas/BusinessAccountProfile"
+          },
+          "personProfile": {
+            "$ref": "#/components/schemas/PersonAccountProfile"
+          },
+          "contacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomerContact"
+            }
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomerAddress"
+            }
+          },
+          "externalReferences": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomerExternalReference"
+            }
+          },
+          "classifications": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomerClassification"
+            }
+          },
+          "relationships": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountRelationship"
+            }
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateCustomerAccountRequest": {
+        "type": "object",
+        "required": [
+          "customerCode",
+          "accountName",
+          "accountKind",
+          "customerSegment",
+          "accountType"
+        ],
+        "properties": {
+          "accountNumber": {
+            "type": "string"
+          },
+          "customerCode": {
+            "type": "string"
+          },
+          "accountName": {
+            "type": "string"
+          },
+          "accountKind": {
+            "type": "string",
+            "enum": ["ORGANIZATION", "PERSON"]
+          },
+          "customerSegment": {
+            "type": "string",
+            "enum": ["B2B", "B2C"]
+          },
+          "accountType": {
+            "type": "string",
+            "enum": [
+              "DEALER",
+              "SHOWROOM",
+              "B2B_CUSTOMER",
+              "B2C_CUSTOMER",
+              "ONLINE_CUSTOMER",
+              "PARTNER",
+              "INDIVIDUAL",
+              "COMPANY"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["PENDING", "ACTIVE", "INACTIVE", "SUSPENDED", "ARCHIVED"]
+          },
+          "parentAccountId": {
+            "type": "string"
+          },
+          "parentCustomerCode": {
+            "type": "string"
+          },
+          "taxCode": {
+            "type": "string"
+          },
+          "businessRegistrationNo": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "website": {
+            "type": "string"
+          },
+          "industry": {
+            "type": "string"
+          },
+          "regionCode": {
+            "type": "string"
+          },
+          "territoryCode": {
+            "type": "string"
+          },
+          "ownerUserId": {
+            "type": "string"
+          },
+          "businessProfile": {
+            "$ref": "#/components/schemas/BusinessAccountProfile"
+          },
+          "personProfile": {
+            "$ref": "#/components/schemas/PersonAccountProfile"
+          },
+          "contacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomerContact"
+            }
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomerAddress"
+            }
+          },
+          "externalReferences": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomerExternalReference"
+            }
+          },
+          "classifications": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomerClassification"
+            }
+          },
+          "relationships": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountRelationship"
+            }
+          }
+        }
+      },
+      "UpdateCustomerAccountRequest": {
+        "$ref": "#/components/schemas/CustomerAccountInput"
+      },
+      "CustomerAccountInput": {
+        "type": "object",
+        "properties": {
+          "accountNumber": {
+            "type": "string"
+          },
+          "customerCode": {
+            "type": "string"
+          },
+          "accountName": {
+            "type": "string"
+          },
+          "accountKind": {
+            "type": "string",
+            "enum": ["ORGANIZATION", "PERSON"]
+          },
+          "customerSegment": {
+            "type": "string",
+            "enum": ["B2B", "B2C"]
+          },
+          "accountType": {
+            "type": "string",
+            "enum": [
+              "DEALER",
+              "SHOWROOM",
+              "B2B_CUSTOMER",
+              "B2C_CUSTOMER",
+              "ONLINE_CUSTOMER",
+              "PARTNER",
+              "INDIVIDUAL",
+              "COMPANY"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["PENDING", "ACTIVE", "INACTIVE", "SUSPENDED", "ARCHIVED"]
+          },
+          "parentAccountId": {
+            "type": "string"
+          },
+          "parentCustomerCode": {
+            "type": "string"
+          },
+          "taxCode": {
+            "type": "string"
+          },
+          "businessRegistrationNo": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "website": {
+            "type": "string"
+          },
+          "industry": {
+            "type": "string"
+          },
+          "regionCode": {
+            "type": "string"
+          },
+          "territoryCode": {
+            "type": "string"
+          },
+          "ownerUserId": {
+            "type": "string"
+          },
+          "businessProfile": {
+            "$ref": "#/components/schemas/BusinessAccountProfile"
+          },
+          "personProfile": {
+            "$ref": "#/components/schemas/PersonAccountProfile"
+          },
+          "contacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomerContact"
+            }
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomerAddress"
+            }
+          },
+          "externalReferences": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomerExternalReference"
+            }
+          },
+          "classifications": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomerClassification"
+            }
+          },
+          "relationships": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountRelationship"
+            }
+          }
+        }
+      },
+      "BusinessAccountProfile": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "legalName": {
+            "type": "string"
+          },
+          "taxCode": {
+            "type": "string"
+          },
+          "businessRegistrationNo": {
+            "type": "string"
+          },
+          "industry": {
+            "type": "string"
+          },
+          "annualRevenue": {
+            "type": "number"
+          },
+          "numberOfEmployees": {
+            "type": "integer"
+          },
+          "ownershipType": {
+            "type": "string"
+          },
+          "paymentTerm": {
+            "type": "string"
+          },
+          "creditLimit": {
+            "type": "number"
+          },
+          "dealerTier": {
+            "type": "string"
+          },
+          "dealerType": {
+            "type": "string"
+          },
+          "regionCode": {
+            "type": "string"
+          },
+          "territoryCode": {
+            "type": "string"
+          }
+        }
+      },
+      "PersonAccountProfile": {
+        "type": "object",
+        "required": ["firstName", "lastName"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "middleName": {
+            "type": "string"
+          },
+          "salutation": {
+            "type": "string"
+          },
+          "birthDate": {
+            "type": "string"
+          },
+          "gender": {
+            "type": "string"
+          },
+          "personalEmail": {
+            "type": "string"
+          },
+          "personalMobile": {
+            "type": "string"
+          },
+          "personalIdNumber": {
+            "type": "string"
+          },
+          "loyaltyId": {
+            "type": "string"
+          },
+          "consentStatus": {
+            "type": "string"
+          },
+          "preferredChannel": {
+            "type": "string"
+          }
+        }
+      },
+      "CustomerContact": {
+        "type": "object",
+        "required": ["fullName"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "contactCode": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "jobTitle": {
+            "type": "string"
+          },
+          "department": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "mobile": {
+            "type": "string"
+          },
+          "zalo": {
+            "type": "string"
+          },
+          "contactRole": {
+            "type": "string",
+            "enum": [
+              "OWNER",
+              "PURCHASING",
+              "ACCOUNTING",
+              "TECHNICAL",
+              "SALES",
+              "WAREHOUSE",
+              "OTHER"
+            ]
+          },
+          "isPrimary": {
+            "type": "boolean"
+          },
+          "isDecisionMaker": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["ACTIVE", "INACTIVE"]
+          }
+        }
+      },
+      "CustomerAddress": {
+        "type": "object",
+        "required": ["addressType", "line1", "country"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "addressType": {
+            "type": "string",
+            "enum": [
+              "BILLING",
+              "SHIPPING",
+              "BUSINESS_LOCATION",
+              "REGISTERED_OFFICE",
+              "WAREHOUSE",
+              "SHOWROOM",
+              "BRANCH",
+              "OTHER"
+            ]
+          },
+          "addressName": {
+            "type": "string"
+          },
+          "line1": {
+            "type": "string"
+          },
+          "line2": {
+            "type": "string"
+          },
+          "ward": {
+            "type": "string"
+          },
+          "district": {
+            "type": "string"
+          },
+          "province": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "postalCode": {
+            "type": "string"
+          },
+          "countryCode": {
+            "type": "string"
+          },
+          "stateCode": {
+            "type": "string"
+          },
+          "latitude": {
+            "type": "number"
+          },
+          "longitude": {
+            "type": "number"
+          },
+          "recipientName": {
+            "type": "string"
+          },
+          "recipientPhone": {
+            "type": "string"
+          },
+          "isDefault": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["ACTIVE", "INACTIVE"]
+          },
+          "effectiveFrom": {
+            "type": "string"
+          },
+          "effectiveTo": {
+            "type": "string"
+          }
+        }
+      },
+      "AccountRelationship": {
+        "type": "object",
+        "required": ["relationshipType"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "fromAccountId": {
+            "type": "string"
+          },
+          "fromCustomerCode": {
+            "type": "string"
+          },
+          "toAccountId": {
+            "type": "string"
+          },
+          "toCustomerCode": {
+            "type": "string"
+          },
+          "relationshipType": {
+            "type": "string",
+            "enum": [
+              "PARENT_CHILD",
+              "HEAD_OFFICE_BRANCH",
+              "GROUP_MEMBER",
+              "REGION_MEMBER",
+              "BILL_TO",
+              "SHIP_TO",
+              "MANAGED_BY"
+            ]
+          },
+          "direction": {
+            "type": "string",
+            "enum": ["CHILD_TO_PARENT", "PARENT_TO_CHILD"]
+          },
+          "isPrimary": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["ACTIVE", "INACTIVE"]
+          },
+          "effectiveFrom": {
+            "type": "string"
+          },
+          "effectiveTo": {
+            "type": "string"
+          }
+        }
+      },
+      "CustomerExternalReference": {
+        "type": "object",
+        "required": ["sourceSystem", "externalId"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "sourceSystem": {
+            "type": "string"
+          },
+          "externalId": {
+            "type": "string"
+          },
+          "externalCode": {
+            "type": "string"
+          },
+          "isPrimary": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["ACTIVE", "INACTIVE"]
+          },
+          "lastSyncedAt": {
+            "type": "string"
+          }
+        }
+      },
+      "CustomerClassification": {
+        "type": "object",
+        "required": ["classificationType", "classificationCode"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "classificationType": {
+            "type": "string",
+            "enum": [
+              "CUSTOMER_TYPE",
+              "CHANNEL",
+              "SEGMENT",
+              "STATUS_TAG",
+              "PARTNER_TYPE"
+            ]
+          },
+          "classificationCode": {
+            "type": "string"
+          },
+          "classificationName": {
+            "type": "string"
+          },
+          "isPrimary": {
+            "type": "boolean"
+          },
+          "effectiveFrom": {
+            "type": "string"
+          },
+          "effectiveTo": {
+            "type": "string"
+          }
+        }
+      },
+      "UpsertCustomerAccountRequest": {
+        "type": "object",
+        "required": ["lookup", "data"],
+        "properties": {
+          "lookup": {
+            "type": "object",
+            "properties": {
+              "accountNumber": {
+                "type": "string"
+              },
+              "customerCode": {
+                "type": "string"
+              },
+              "externalReference": {
+                "type": "object",
+                "properties": {
+                  "sourceSystem": {
+                    "type": "string"
+                  },
+                  "externalId": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "data": {
+            "$ref": "#/components/schemas/CustomerAccountInput"
+          }
+        }
+      },
+      "UpdateAccountStatusRequest": {
+        "type": "object",
+        "required": ["status"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["PENDING", "ACTIVE", "INACTIVE", "SUSPENDED", "ARCHIVED"]
+          }
+        }
+      },
+      "AccountHierarchyNode": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string"
+          },
+          "accountNumber": {
+            "type": "string"
+          },
+          "customerCode": {
+            "type": "string"
+          },
+          "accountName": {
+            "type": "string"
+          },
+          "accountType": {
+            "type": "string",
+            "enum": [
+              "DEALER",
+              "SHOWROOM",
+              "B2B_CUSTOMER",
+              "B2C_CUSTOMER",
+              "ONLINE_CUSTOMER",
+              "PARTNER",
+              "INDIVIDUAL",
+              "COMPANY"
+            ]
+          },
+          "customerSegment": {
+            "type": "string",
+            "enum": ["B2B", "B2C"]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["PENDING", "ACTIVE", "INACTIVE", "SUSPENDED", "ARCHIVED"]
+          },
+          "relationshipType": {
+            "type": "string"
+          },
+          "level": {
+            "type": "integer"
+          },
+          "path": {
+            "type": "string"
+          },
+          "children": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountHierarchyNode"
+            }
+          }
+        }
+      }
+    }
+  }
+}
