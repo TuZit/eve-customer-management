@@ -27,7 +27,7 @@ export function DuplicateCodeModal({ accounts }: DuplicateCodeModalProps) {
     <Modal
       title="Duplicate Code Validation"
       open={open}
-      width={760}
+      width="min(760px, calc(100vw - 24px))"
       onCancel={() => setOpen(false)}
       footer={<Button onClick={() => setOpen(false)}>Close</Button>}
     >
@@ -75,6 +75,7 @@ export function DuplicateCodeModal({ accounts }: DuplicateCodeModalProps) {
             ),
           },
         ]}
+        scroll={{ x: 980 }}
       />
     </Modal>
   )

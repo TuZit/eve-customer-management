@@ -58,11 +58,12 @@ export function CreateCustomerDrawer() {
   return (
     <Drawer
       title="Create Dealer / Customer"
-      width={860}
+      width="min(860px, 100vw)"
       open={open}
       onClose={() => setOpen(false)}>
       <Steps
         size="small"
+        responsive
         current={step}
         items={wizardSteps.map((title) => ({ title }))}
       />
@@ -88,7 +89,7 @@ export function CreateCustomerDrawer() {
         {step === 5 && <ExternalIntegrationStep />}
         {step === 6 && <ReviewStep form={form} />}
       </Form>
-      <Flex justify="space-between" className="drawer-footer">
+      <Flex justify="space-between" gap={12} wrap className="drawer-footer">
         <Button
           disabled={step === 0}
           onClick={() => setStep((current) => current - 1)}>

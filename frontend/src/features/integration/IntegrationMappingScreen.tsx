@@ -15,7 +15,7 @@ export function IntegrationMappingScreen() {
       />
       <Row gutter={[12, 12]}>
         {integrationSystems.map((system, index) => (
-          <Col span={6} key={system}>
+          <Col xs={24} sm={12} xl={6} key={system}>
             <Card>
               <Flex justify="space-between" align="center">
                 <Text strong>{system}</Text>
@@ -50,6 +50,7 @@ export function IntegrationMappingScreen() {
             { title: 'Sync Direction', dataIndex: 'direction' },
             { title: 'Status', dataIndex: 'status', render: (value) => <Tag color={value === 'Ready' ? 'green' : 'orange'}>{value}</Tag> },
           ]}
+          scroll={{ x: 980 }}
         />
       </Card>
     </section>

@@ -53,7 +53,7 @@ export function CustomerDetailDrawer({ account, onClose }: CustomerDetailDrawerP
   ]
 
   return (
-    <Drawer width={980} open={Boolean(account)} onClose={onClose} title="Customer record detail">
+    <Drawer width="min(980px, 100vw)" open={Boolean(account)} onClose={onClose} title="Customer record detail">
       <section className="record-header">
         <div>
           <BusinessKey size="large">{account.customerCode}</BusinessKey>
@@ -83,7 +83,7 @@ export function CustomerDetailDrawer({ account, onClose }: CustomerDetailDrawerP
           ['Region', account.regionCode ?? '-'],
           ['Status', account.status],
         ].map(([label, value]) => (
-          <Col span={6} key={label}>
+          <Col xs={24} sm={12} lg={6} key={label}>
             <Card size="small">
               <Text type="secondary">{label}</Text>
               <div className="highlight-value">{value}</div>
@@ -98,7 +98,7 @@ export function CustomerDetailDrawer({ account, onClose }: CustomerDetailDrawerP
             label: 'Details',
             children: (
               <Row gutter={16}>
-                <Col span={15}>
+                <Col xs={24} lg={15}>
                   <Descriptions bordered size="small" column={1}>
                     <Descriptions.Item label="Legal / Display Name">
                       {account.businessProfile?.legalName ?? account.accountName}
@@ -115,7 +115,7 @@ export function CustomerDetailDrawer({ account, onClose }: CustomerDetailDrawerP
                     <Descriptions.Item label="Last Updated">{formatDate(account.updatedAt)}</Descriptions.Item>
                   </Descriptions>
                 </Col>
-                <Col span={9}>
+                <Col xs={24} lg={9}>
                   <Card title="Validation" className="validation-card">
                     <Timeline
                       items={[
@@ -155,6 +155,7 @@ export function CustomerDetailDrawer({ account, onClose }: CustomerDetailDrawerP
                   { title: 'Mobile', dataIndex: 'mobile' },
                   { title: 'Primary', dataIndex: 'isPrimary', render: (value) => (value ? 'Yes' : 'No') },
                 ]}
+                scroll={{ x: 560 }}
               />
             ),
           },
@@ -172,6 +173,7 @@ export function CustomerDetailDrawer({ account, onClose }: CustomerDetailDrawerP
                   { title: 'District', dataIndex: 'district' },
                   { title: 'Province', dataIndex: 'province' },
                 ]}
+                scroll={{ x: 620 }}
               />
             ),
           },

@@ -18,6 +18,7 @@ import {
   Card,
   Col,
   Flex,
+  Grid,
   Input,
   Row,
   Space,
@@ -62,6 +63,8 @@ export function CustomerMasterScreen() {
   const setFilters = useDealerUiStore((state) => state.setFilters)
   const queryClient = useQueryClient()
   const { message } = AntdApp.useApp()
+  const screens = Grid.useBreakpoint()
+  const isCompact = !screens.lg
 
   const statusMutation = useMutation({
     mutationFn: ({ id, status }: { id: string; status: AccountStatus }) =>
@@ -86,7 +89,7 @@ export function CustomerMasterScreen() {
     {
       title: 'Dealer / Customer Code',
       dataIndex: 'customerCode',
-      fixed: 'left',
+      fixed: isCompact ? undefined : 'left',
       width: 176,
       render: (code) => <BusinessKey>{code}</BusinessKey>,
     },
@@ -136,7 +139,7 @@ export function CustomerMasterScreen() {
     { title: 'Last Updated', dataIndex: 'updatedAt', width: 122, render: formatDate },
     {
       title: 'Actions',
-      fixed: 'right',
+      fixed: isCompact ? undefined : 'right',
       width: 210,
       render: (_, record) => (
         <Space size="small">
@@ -212,7 +215,7 @@ export function CustomerMasterScreen() {
           loading={isFetching}
           dataSource={accounts}
           columns={columns}
-          scroll={{ x: 1900 }}
+          scroll={{ x: isCompact ? 1500 : 1900 }}
           pagination={{ pageSize: 8, showSizeChanger: false }}
           size="middle"
         />

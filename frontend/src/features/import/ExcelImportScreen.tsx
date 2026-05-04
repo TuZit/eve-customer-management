@@ -25,10 +25,10 @@ export function ExcelImportScreen() {
         actions={<Button icon={<FileExcelOutlined />}>Download Template</Button>}
       />
       <Card>
-        <Steps current={3} items={['Upload Excel', 'Sheet Selection', 'Field Mapping', 'Validation Result', 'Commit'].map((title) => ({ title }))} />
+        <Steps responsive current={3} items={['Upload Excel', 'Sheet Selection', 'Field Mapping', 'Validation Result', 'Commit'].map((title) => ({ title }))} />
         <Divider />
         <Row gutter={[16, 16]}>
-          <Col span={9}>
+          <Col xs={24} lg={9}>
             <Dragger beforeUpload={() => false} accept=".xlsx">
               <p className="ant-upload-drag-icon"><FileExcelOutlined /></p>
               <p className="ant-upload-text">Drop Excel file here</p>
@@ -42,7 +42,7 @@ export function ExcelImportScreen() {
               </Space>
             </Card>
           </Col>
-          <Col span={15}>
+          <Col xs={24} lg={15}>
             <Table
               size="small"
               pagination={false}
@@ -61,6 +61,7 @@ export function ExcelImportScreen() {
                 { title: 'Required', dataIndex: 'required' },
                 { title: 'Transformation Rule', dataIndex: 'transformationRule' },
               ]}
+              scroll={{ x: 820 }}
             />
           </Col>
         </Row>
@@ -74,7 +75,7 @@ export function ExcelImportScreen() {
           ['Missing parent account', 41],
           ['Rows with errors', 38],
         ].map(([label, value]) => (
-          <Col span={4} key={label}><Card><Statistic title={label} value={value} /></Card></Col>
+          <Col xs={24} sm={12} lg={8} xl={4} key={label}><Card><Statistic title={label} value={value} /></Card></Col>
         ))}
       </Row>
       <Card title="Validation result">
@@ -96,8 +97,9 @@ export function ExcelImportScreen() {
             { title: 'Suggested Fix', dataIndex: 'fix' },
             { title: 'Action', render: () => <Button size="small">Fix</Button> },
           ]}
+          scroll={{ x: 980 }}
         />
-        <Flex justify="end" gap={8} className="drawer-footer">
+        <Flex justify="end" gap={8} wrap className="drawer-footer">
           <Button>Cancel</Button>
           <Button>Download Error Report</Button>
           <Button type="primary">Import Valid Rows</Button>

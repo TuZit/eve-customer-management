@@ -19,7 +19,7 @@ export function AdvancedFilterDrawer() {
   const [form] = Form.useForm()
 
   return (
-    <Drawer title="Advanced customer filters" width={430} open={open} onClose={() => setOpen(false)}>
+    <Drawer title="Advanced customer filters" width="min(430px, 100vw)" open={open} onClose={() => setOpen(false)}>
       <Form
         layout="vertical"
         form={form}
@@ -39,7 +39,7 @@ export function AdvancedFilterDrawer() {
           <Select allowClear options={accountTypeOptions} />
         </Form.Item>
         <Row gutter={12}>
-          <Col span={12}>
+          <Col xs={24} sm={12}>
             <Form.Item label="Account Party Type" name="accountKind">
               <Select
                 allowClear
@@ -50,7 +50,7 @@ export function AdvancedFilterDrawer() {
               />
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col xs={24} sm={12}>
             <Form.Item label="Segment" name="customerSegment">
               <Select
                 allowClear
@@ -66,12 +66,12 @@ export function AdvancedFilterDrawer() {
           <Select allowClear options={statusOptions} />
         </Form.Item>
         <Row gutter={12}>
-          <Col span={12}>
+          <Col xs={24} sm={12}>
             <Form.Item label="Brand" name="brand">
               <Select allowClear options={brandSystems.map((brand) => ({ label: brand, value: brand }))} />
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col xs={24} sm={12}>
             <Form.Item label="Group" name="group">
               <Select allowClear options={groupOptions} />
             </Form.Item>
@@ -95,7 +95,7 @@ export function AdvancedFilterDrawer() {
         <Form.Item name="missingRequired" valuePropName="checked">
           <Checkbox>Only records missing required fields</Checkbox>
         </Form.Item>
-        <Flex justify="end" gap={8}>
+        <Flex justify="end" gap={8} wrap>
           <Button
             onClick={() => {
               resetFilters()

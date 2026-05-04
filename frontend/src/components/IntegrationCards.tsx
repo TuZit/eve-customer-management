@@ -14,7 +14,7 @@ export function IntegrationCards({ account }: IntegrationCardsProps) {
       {integrationSystems.map((system) => {
         const reference = account.externalReferences.find((item) => item.sourceSystem === system)
         return (
-          <Col span={8} key={system}>
+          <Col xs={24} md={12} xl={8} key={system}>
             <Card size="small">
               <Flex justify="space-between">
                 <Text strong>{system}</Text>

@@ -1,5 +1,5 @@
 import { ApartmentOutlined, ApiOutlined, DatabaseOutlined, FileExcelOutlined } from '@ant-design/icons'
-import { Layout, Menu, Typography } from 'antd'
+import { Grid, Layout, Menu, Typography } from 'antd'
 import type { ReactNode } from 'react'
 import { useDealerUiStore, type MainView } from '../store/dealerUiStore'
 
@@ -13,6 +13,8 @@ interface AppShellProps {
 export function AppShell({ children }: AppShellProps) {
   const activeView = useDealerUiStore((state) => state.activeView)
   const setActiveView = useDealerUiStore((state) => state.setActiveView)
+  const screens = Grid.useBreakpoint()
+  const isCompact = !screens.lg
 
   return (
     <Layout className="app-shell">
@@ -25,7 +27,8 @@ export function AppShell({ children }: AppShellProps) {
           </div>
         </div>
         <Menu
-          mode="inline"
+          mode={isCompact ? 'horizontal' : 'inline'}
+          className="app-menu"
           selectedKeys={[activeView]}
           onClick={({ key }) => setActiveView(key as MainView)}
           items={[
